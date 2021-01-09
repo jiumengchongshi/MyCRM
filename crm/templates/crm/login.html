@@ -1,0 +1,54 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="shortcut icon" href="/favicon.ico" />
+</head>
+<body style="background-image: url('/static/crm/images/login1.jpg');">
+{% include 'navbar.html' %}
+<div style="height: 10rem"></div>
+<div class="d-flex justify-content-center">
+        <div class="card shadow" style="width: 300px">
+                <div class="card-header">
+                    <h3 class="card-title text-center">客服工单系统</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'crm:login' %}" method="post">
+                        {% csrf_token %}
+                      <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名" autofocus required>
+                          {% if message %}
+                          <small id="warning" class="form-text text-danger">{{ message }}</small>
+                          {% endif %}
+                      </div>
+                      <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码" required>
+                      </div>
+                      <button type="submit" class="btn btn-primary btn-block">登陆</button>
+                    </form>
+                </div>
+        </div>
+</div>
+<div style="height: 5rem"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 offset-md-4 alert alert-success">
+          <h4 class="alert-heading">温馨提示</h4>
+          <p>本系统目前仅供合作用户使用，暂未提供注册功能，如需申请用户请联系客服QQ：510803345</p>
+          <hr>
+          <p class="mb-0">技术支持及问题反馈请联系微信：13032032135（添加微信请备注：问题反馈）</p>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+</html>
