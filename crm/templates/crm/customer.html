@@ -3,9 +3,9 @@
 {% block title %}customer{% endblock %}
 
 {% block main %}
-    <div class="container-fluid">
+    <div class="container-fluid" style="padding-left: 0px">
         <div class="row">
-            <div class="col-lg-3 col-xl-2">
+            <div class="col-3 col-xl-2">
                 <div class="card text-white bg-light mb-3">
                   <div class="card-header">
                       <div class="input-group mb-3">
@@ -21,7 +21,7 @@
                 </div>
 
             </div>
-            <div class="col-lg-9 col-xl-10">
+            <div class="col-9 col-xl-10">
                 <div class="tab-content" id="v-pills-tabContent">
                   <div class="tab-pane fade show active" id="v-pills-announcement" role="tabpanel" aria-labelledby="v-pills-announcement-tab">
                       {% include 'crm/announcement.html' %}
@@ -49,12 +49,3 @@
       </div>
     </div>
 {% endblock %}
-<script>
-    const csrftoken = Cookies.get('csrftoken');
-    if (csrftoken === ''){
-        window.alert("yichang");
-    }
-    else {
-        window.alert(csrftoken);
-    }
-</script>

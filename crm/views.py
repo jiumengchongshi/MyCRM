@@ -51,7 +51,7 @@ def service_manager(request):
 
 
 def login(request):
-    if request.session.get('is_login', None):#Prohibit repeat login.
+    if request.session.get('is_login', None):  # Prohibit repeat login.
         return allocation(request)
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -89,3 +89,9 @@ def announcements(request):
     group_name = request.session.get('group_name')
     notices = models.Announcement.objects.filter(group__group_name=group_name).order_by('-pub_date')
     return JsonResponse(list(notices.values()), safe=False)
+
+
+def customer_orders(request):
+    username = request.session.get('user_name')
+    orders = models.Order.objects.filter(customer__name=username)
+    return JsonResponse(list(orders.values()), safe=False)

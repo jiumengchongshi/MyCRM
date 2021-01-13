@@ -10,70 +10,12 @@
                     <span class="float-right">[[date(item.pub_date)]]</span>
                 </button>
 
-
             </div>
             <div :id="collapse(index)" class="collapse" aria-labelledby="notice(index)" data-parent="#announcements">
               <div class="card-body text-info">
-                [[item.notice]]
+                  <pre>[[item.notice]]</pre>
               </div>
             </div>
         </div>
     </div>
-<!--
-    {% for n in announcements %}
-        <div class="card border-info">
-            <div class="card-header" id="notice{{ n.id }}" >
-              <h6 class="mb-0">
-                <button class="btn btn-line-info collapsed" type="button" data-toggle="collapse" data-target="#collapse{{ n.id }}" aria-expanded="false" aria-controls="collapse{{ n.id }}">
-                  {{ n.title }}
-                </button>
-              </h6>
-            </div>
-            <div id="collapse{{ n.id }}" class="collapse" aria-labelledby="notice{{ n.id }}" data-parent="#announcements">
-              <div class="card-body text-info">
-                {{ n.notice }}
-              </div>
-            </div>
-        </div>
-    {% endfor %}
--->
 </div>
-
-
-<script>
-    let announcements = new Vue({
-        el: "#announcements",
-        delimiters: ["[[", "]]"],
-        data: {
-            announcements: []
-        },
-        mounted: function(){
-            this.fetchData();
-        },
-        methods: {
-            fetchData(){
-                axios.get("/crm/api/announcements/").then(response=>{
-                    this.announcements = response.data;
-                }), err=>{
-                    console.log(err);
-                };
-            },
-            notice: function (i) {
-                return "notice" + i
-
-            },
-            collapse: function (i) {
-                return "collapse" + i
-
-            },
-            co: function (i) {
-                return "#collapse" + i
-
-            },
-            date: function (str) {
-                return str.substr(0,10) + " " + str.substr(11,8)
-
-            }
-        },
-    })
-</script>

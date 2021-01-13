@@ -1,1 +1,121 @@
-customer order
+
+<div style="height: 3rem"></div>
+<div class="card shadow">
+<nav class="card-header">
+  <div class="nav nav-tabs card-header-tabs w-100" id="nav-customer-orders" role="tablist">
+      <a class="nav-item nav-link active" id="nav-waiting-tab" data-toggle="tab" href="#nav-waiting" role="tab" aria-controls="nav-waiting" aria-selected="true">待处理</a>
+      <a class="nav-item nav-link" id="nav-processing-tab" data-toggle="tab" href="#nav-processing" role="tab" aria-controls="nav-processing" aria-selected="false">处理中</a>
+      <a class="nav-item nav-link" id="nav-finish-tab" data-toggle="tab" href="#nav-finish" role="tab" aria-controls="nav-finish" aria-selected="false">处理完成</a>
+      <a class="nav-item nav-link" id="nav-close-tab" data-toggle="tab" href="#nav-close" role="tab" aria-controls="nav-close" aria-selected="false">已关闭</a>
+      <a class="nav-item nav-link" id="nav-create-tab" data-toggle="tab" href="#nav-create" role="tab" aria-controls="nav-create" aria-selected="false">提交问题</a>
+
+  </div>
+</nav>
+<div class="tab-content card-body" id="nav-co-list">
+    <div class="tab-pane fade show active" id="nav-waiting" role="tabpanel" aria-labelledby="nav-waiting-tab">
+        <h3 class="text-center">已提交等待处理的问题列表</h3>
+        <div style="height: 10px"></div>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th width="10px"></th>
+                    <th width="100px">快递单号</th>
+                    <th width="80px">问题类型</th>
+                    <th width="300px">标题</th>
+                    <th width="80px">处理状态</th>
+                    <th width="200px">提交时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>6</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="tab-pane fade" id="nav-processing" role="tabpanel" aria-labelledby="nav-processing-tab">
+        处理中的问题列表
+    </div>
+
+
+    <div class="tab-pane fade" id="nav-finish" role="tabpanel" aria-labelledby="nav-finish-tab">
+        已完成的问题列表
+    </div>
+
+
+    <div class="tab-pane fade" id="nav-close" role="tabpanel" aria-labelledby="nav-close-tab">
+        已关闭的问题列表
+    </div>
+
+
+    <div class="tab-pane fade" id="nav-create" role="tabpanel" aria-labelledby="nav-create-tab">
+        新建问题
+    </div>
+</div>
+</div>
+<script>
+    let c_orders = new Vue({
+        el: "#nav-co-list",
+        delimiters: ["[[", "]]"],
+        data: {
+            waiting: [],
+            processing: [],
+            finish: [],
+            closes: []
+        },
+        mounted(){
+            this.fetchData();
+        },
+        methods: {
+            fetchData() {
+                axios.get("/crm/api/customerorders/").then(response=>{
+                    let orders = response.data;
+                    for (let n in orders){
+                        switch (n.question_types) {
+                            case "LJ": n.question_types = "拦截";
+                            break;
+                            case "GDZ": n.question_types = "改地址";
+                            break;
+                            case "CP": n.question_types = "催派";
+                            break;
+                            case "YW": n.question_types = "延误";
+                            break;
+                            case "ZL": n.question_types = "查询重量";
+                            break;
+                            case "YS": n.question_types = "遗失";
+                            break;
+
+                        }
+                        switch (n.order_status) {
+                            case 1: this.waiting.push(n);
+                            break;
+                            case 2: this.processing.push(n);
+                            break;
+                            case 3: this.finish.push(n);
+                            break;
+                            case 4: this.closes.push(n);
+                            break;
+
+                        }
+
+                    }
+                })
+            },
+            createID: function (n, i) {
+                return n + i
+
+            },
+            getID: function (n, i) {
+                return "#" + n + i
+
+            },
+        }
+    })
+</script>
