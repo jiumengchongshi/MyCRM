@@ -15,7 +15,7 @@
                   <div class="card-body" style="height: 50rem">
                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                           <a class="nav-link active" id="v-pills-announcement-tab" data-toggle="pill" href="#v-pills-announcement" role="tab" aria-controls="v-pills-announcement" aria-selected="true">公告通知</a>
-                          <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-myorder" role="tab" aria-controls="v-pills-myorder" aria-selected="false">我的问题</a>
+                          <a class="nav-link" id="v-pills-myorder-tab" data-toggle="pill" href="#v-pills-myorder" role="tab" aria-controls="v-pills-myorder" aria-selected="false">我的问题</a>
                         </div>
                   </div>
                 </div>
@@ -48,4 +48,9 @@
           <p class="text-right font-italic text-black-50">{{ notice.pub_date }}</p>
       </div>
     </div>
+{% endblock %}
+
+
+{% block js %}
+    <script src="/static/crm/customer.js"></script>
 {% endblock %}

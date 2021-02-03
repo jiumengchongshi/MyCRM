@@ -12,7 +12,8 @@ urlpatterns = [
     path('customermanager/', views.customer_manager, name='customer_manager'),
     path('servicemanager/', views.service_manager, name='service_manager'),
     path('logout/', views.logout, name='logout'),
-    path('api/announcements/', views.announcements, name='announcements'),
-    path('api/customerorders/', views.customer_orders, name='customer_orders'),
+    path('api/announcements/', views.announcements, name='api_announcements'),
+    path('api/handover/', views.handover, name='api_handover'),
+    path('api/orders/', views.Orders.as_view(), name='api_orders'),
 
 ]

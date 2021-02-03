@@ -1,13 +1,65 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>service</title>
-</head>
-<body>
-<h1>The service page</h1>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}service{% endblock %}
+
+{% block main %}
+    <div class="container-fluid" style="padding-left: 0px">
+        <div class="row">
+            <div class="col-3 col-xl-2">
+                <div class="card text-white bg-light mb-3">
+                    <div class="card-header">
+                        <div class="input-group mb-3">
+                            <input type="search" class="form-control" placeholder="输入运单号搜索" name="searchbar"
+                                   id="searchbar" onkeypress="">
+                        </div>
+                    </div>
+                    <div class="card-body" style="height: 50rem">
+                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                             aria-orientation="vertical">
+                            <a class="nav-link" id="v-pills-handover-tab" data-toggle="pill" href="#v-pills-handover"
+                               role="tab" aria-controls="v-pills-handover" aria-selected="false">交接日报</a>
+                            <a class="nav-link active" id="v-pills-workbench-tab" data-toggle="pill"
+                               href="#v-pills-workbench" role="tab" aria-controls="v-pills-workbench"
+                               aria-selected="true">我的工作台</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-9 col-xl-10">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade" id="v-pills-handover" role="tabpanel"
+                         aria-labelledby="v-pills-handover-tab">
+                        {% include 'crm/handover.html' %}
+                    </div>
+                    <div class="tab-pane fade show active" id="v-pills-workbench" role="tabpanel"
+                         aria-labelledby="v-pills-workbench-tab">
+                        {% include 'crm/serviceorder.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block notice %}
+    <div class="card" style="height: 50rem">
+        <div class="card-header text-center">{{ group_name }}</div>
+        <div class="card-body">
+            <h4 class="card-title text-center">{{ notice.title }}</h4>
+            <p class="card-text text-wrap">
+            <pre>{{ notice.handover_text }}</pre>
+            </p>
+            <div style="height: 3rem"></div>
+            <p class="text-right font-italic text-warning">{{ notice.user }}</p>
+            <p class="text-right font-italic text-black-50">{{ notice.pub_date }}</p>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+    <script src="/static/crm/service.js"></script>
+{% endblock %}

@@ -1,13 +1,17 @@
 <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-default navbar-fixed-top navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+        {% if group_name %}
+            <span class="navbar-brand">{{ group_name }}</span>
+        {% else %}
+            <h2 class="navbar-brand">客服工单系统</h2>
+        {% endif %}
     <div class="justify-content-end">
           {% if username %}
               <span class="navbar-text">欢迎光临！{{ username }}</span>&nbsp;&nbsp;
               <a href="{% url 'crm:logout' %}" class="btn btn-outline-success my-2 my-sm-0" role="button">退出</a>
           {% else %}
-              <span class="navbar-text">请登录！</span>
+              <a href="{% url 'crm:login' %}" class="btn btn-outline-success my-2 my-sm-0" role="button">请登录！</a>
           {% endif %}
     </div>
     </div>

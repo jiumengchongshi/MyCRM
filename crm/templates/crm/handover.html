@@ -1,8 +1,8 @@
 <div style="height: 3rem"></div>
 
-<div class="accordion" id="announcements">
-    <template v-if="announcement">
-        <div v-for="(item,index) in announcement">
+<div class="accordion" id="handover">
+    <template v-if="handover">
+        <div v-for="(item,index) in handover">
             <div class="card border-info">
                 <div class="card-header" :id="notice(index)" style="padding: 0px">
 
@@ -12,9 +12,9 @@
                     </button>
 
                 </div>
-                <div :id="collapse(index)" class="collapse" aria-labelledby="notice(index)" data-parent="#announcements">
+                <div :id="collapse(index)" class="collapse" aria-labelledby="notice(index)" data-parent="#handover">
                   <div class="card-body text-info">
-                      <pre>[[item.notice]]</pre>
+                      <pre>[[item.handover_text]]</pre>
                   </div>
                 </div>
             </div>

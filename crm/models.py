@@ -85,9 +85,19 @@ class Comment(models.Model):
     comment_text = models.TextField(max_length=300)
     create_time = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.order
+
 
 class Handover(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     handover_text = models.TextField()
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     pub_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        get_latest_by = 'pub_date'
