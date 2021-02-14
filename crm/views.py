@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http.response import JsonResponse
 from django.views.generic import View
 from django.utils.decorators import method_decorator
+from django.db.models import Q, F
+from datetime import datetime
 from . import models
 import hashlib
 # Create your views here.
@@ -30,10 +32,10 @@ def allocation(request):
 
 def my_not_login(function):
 
-    def new_function(request):
+    def new_function(request, *args, **kwargs):
         if not request.session.get('is_login', None):
             return redirect('/crm/')
-        return function(request)
+        return function(request, *args, **kwargs)
     return new_function
 
 
@@ -127,13 +129,33 @@ class Orders(View):
         elif role == "CM":
             orders = models.Order.objects.filter(group__group_name=group_name)
         elif role == "S":
-            orders = models.Order.objects.filter(service__name=username)
+            order_status = request.GET.get('order_status')
+            if order_status == 'processing':
+                orders = models.Order.objects.filter(Q(service__name=username) & Q(order_status=2))
+            elif order_status == 'finished':
+                orders = models.Order.objects.filter(Q(service__name=username) & Q(order_status=3))
+            else:
+                orders = models.Order.objects.filter(service__name=username)
         elif role == "SM":
             orders = models.Order.objects.filter(service__group__group_name=group_name)
         else:
             message = '权限异常！'
             return JsonResponse({'message': message}, safe=False)
-        return JsonResponse(list(orders.values()), safe=False)
+        order_list = []
+        for i in orders:
+            temp = {
+                'id': i.id,
+                'customer': i.customer.name,
+                'service': i.service.name,
+                'zto_number': i.zto_number,
+                'question_types': i.get_question_types_display(),
+                'question_text': i.question_text,
+                'create_time': i.create_time.strftime('%Y-%m-%d %H:%M:%S'),
+                'order_status': i.get_order_status_display(),
+                'group': i.group.group_name
+            }
+            order_list.append(temp)
+        return JsonResponse(order_list, safe=False)
 
     def post(self, request):
         role = request.session.get('user_role')
@@ -203,33 +225,9 @@ class Orders(View):
                 }
             return JsonResponse(context, safe=False)
 
-    # def put(self, request):
-    #     """this method is used to define handover between service-users"""
-    #     role = request.session.get('user_role')
-    #     username = request.session.get('user_name')
-    #     user = models.User.objects.get(name=username)
-    #     receiver_name = request.PUT.get('receiver')
-    #     receiver = models.User.objects.get(name=receiver_name)
-    #     if role == "S":
-    #         orders = models.Order.objects.filter(service=user.id)
-    #         if orders:
-    #             order = orders[0]
-    #             order.service = user
-    #             if order.order_status == 1:
-    #                 order.order_status = 2
-    #             order.save()
-    #             order_quantity = len(orders)
-    #             context = {
-    #                 'message': 'success',
-    #                 'order': order,
-    #                 'order_quantity': order_quantity,
-    #             }
-    #         else:
-    #             context = {
-    #                 'message': 'null',
-    #             }
-    #     else:
-    #         context = {
-    #             'message': '权限异常！',
-    #         }
-    #     return JsonResponse(context, safe=False)
+
+@my_not_login
+def order(request, z_number):
+    number = z_number
+    return render(request, 'crm/service.html', locals())
+

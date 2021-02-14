@@ -15,5 +15,6 @@ urlpatterns = [
     path('api/announcements/', views.announcements, name='api_announcements'),
     path('api/handover/', views.handover, name='api_handover'),
     path('api/orders/', views.Orders.as_view(), name='api_orders'),
+    path('api/order/<int:z_number>/', views.order, name='order'),
 
 ]

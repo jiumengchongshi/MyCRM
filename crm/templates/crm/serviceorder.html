@@ -1,38 +1,41 @@
 <div style="height: 3rem"></div>
-<div class="card shadow">
-    <nav class="card-header container-fluid">
-        <div class="nav nav-tabs card-header-tabs w-100 row" id="service-workbench-nav-tab" role="tablist">
-
-            <a class="col-md-2 col-lg-1 nav-item nav-link active text-center" id="nav-service-processing-tab"
-               data-toggle="tab"
-               href="#nav-service-processing"
-               role="tab"
-               aria-controls="nav-service-processing" aria-selected="true">处理中</a>
-            <a class="col-md-2 col-lg-1 nav-item nav-link text-center" id="nav-service-finished-tab" data-toggle="tab"
-               href="#nav-service-finished"
-               role="tab"
-               aria-controls="nav-service-finished" aria-selected="false">已完成</a>
-            <div class="col-md-2 col-lg-7"></div>
-            <div class="col-md-4 col-lg-2"><a href="javascript:void(0);" class="btn btn-primary" id="service-waiting">接单（待处理<span
-                    class="text-warning font-weight-bold" id="waiting-orders-quantity"></span>）</a>
-            </div>
-            <div class="col-md-2 col-lg-1"><a href="javascript:void(0);" class="btn btn-warning" id="service-handover">交接</a>
-            </div>
+<h3>处理中的问题</h3>
+<div style="height: 1rem"></div>
+<div class="container-flout">
 
 
+    <div class="btn-group" style="position: absolute; margin-top: 10px;">
+        <div class="p-2"><a href="javascript:void(0);" class="btn btn-primary" id="service-waiting">接单（待处理<span
+                class="text-warning font-weight-bold" id="waiting-orders-quantity"></span>）</a>
         </div>
-    </nav>
-    <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-service-processing" role="tabpanel"
-             aria-labelledby="nav-service-processing-tab">
-            <h3 class="text-center">处理中的问题</h3>
-            <div style="height: 10px"></div>
-        </div>
-        <div class="tab-pane fade" id="nav-service-finished" role="tabpanel" aria-labelledby="nav-service-finished-tab">
-            <h3 class="text-center">已完成的问题</h3>
-            <div style="height: 10px"></div>
+        <div class="p-2"><a href="javascript:void(0);" class="btn btn-warning" id="service-handover">交接</a>
         </div>
     </div>
+
+    <table class="text-center"
+           data-toggle="table"
+           data-url="/crm/api/orders/?order_status=processing"
+           data-pagination="true"
+           data-toolbar="#ratoolbar"
+           data-show-refresh="true"
+           data-auto-refresh="true"
+           data-show-columns="true"
+           data-search="true"
+           data-locale="zh-CN">
+        <thead>
+        <tr>
+            <th data-field="" data-formatter="tableIndex" data-width="5px">序号</th>
+            <th data-field="zto_number">快递单号</th>
+            <th data-sortable="true" data-field="question_types">问题类型</th>
+            <th data-field="question_text" class="text-truncate">问题描述</th>
+            <th data-sortable="true" data-field="order_status">处理状态</th>
+            <th data-sortable="true" data-field="create_time">提交时间</th>
+            <th data-sortable="true" data-field="customer">客户姓名</th>
+            <th data-sortable="true" data-field="group">客户组</th>
+            <th data-field="cc" data-formatter="serviceAction" data-events="actionEvents">操作</th>
+        </tr>
+        </thead>
+    </table>
 </div>
 
 
@@ -42,20 +45,98 @@
     <div class="modal-dialog modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <div><h5 class="modal-title" id="orderModalTitle">单号：<span class="text-primary" id="orderModalNumber">12345678912345</span></h5></div>
+                <div><h5 class="modal-title" id="orderModalTitle">单号：<span class="text-primary"
+                                                                           id="orderModalNumber"></span>
+                </h5></div>
                 <div style="width: 10rem"></div>
-                <div><h5 class="modal-title">问题类型：<span class="text-success font-weight-bold" id="orderModalQuestionType">改地址</span></h5></div>
+                <div><h5 class="modal-title">问题类型：<span class="text-success font-weight-bold"
+                                                        id="orderModalQuestionType"></span></h5></div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <h6>问题描述</h6>
-                <pre class="alert alert-success" id="orderModalQuestionText">
+                <pre class="alert alert-info" id="orderModalQuestionText">
+                    1
+                    2
+                    3
                 </pre>
+                <div class="alert alert-dark">
+                    <div class="alert-light">
+                        <span class="text-right text-warning">客服：测试客服</span>
+                        <span class="text-right font-italic text-black-50">2021-02-13</span>
+                        <pre>
+                    1
+                    2
+                    3
+                </pre>
+
+                    </div>
+                    <div class="alert-light">
+                        <span class="text-right text-primary">客户：测试客户</span>
+                        <span class="text-right font-italic text-black-50">2021-02-13</span>
+                        <pre>
+                    1
+                    2
+                    3
+                </pre>
+
+                    </div>
+                    <div class="alert-light">
+                        <span class="text-right text-warning">客服：测试客服</span>
+                        <span class="text-right font-italic text-black-50">2021-02-13</span>
+                        <pre>
+                    1
+                    2
+                    3
+                </pre>
+
+                    </div>
+                    <div class="alert-light">
+                        <span class="text-right text-warning">客服：测试客服</span>
+                        <span class="text-right font-italic text-black-50">2021-02-13</span>
+                        <pre>
+                    1
+                    2
+                    3
+                </pre>
+
+                    </div>
+                    <div class="alert-light">
+                        <span class="text-right text-warning">客服：测试客服</span>
+                        <span class="text-right font-italic text-black-50">2021-02-13</span>
+                        <pre>
+                    1
+                    2
+                    3
+                </pre>
+
+                    </div>
+                    <div class="alert-light">
+                        <span class="text-right text-warning">客服：测试客服</span>
+                        <span class="text-right font-italic text-black-50">2021-02-13</span>
+                        <pre>
+                    1
+                    2
+                    3
+                </pre>
+
+                    </div>
+                    <div class="alert-light">
+                        <span class="text-right text-warning">客服：测试客服</span>
+                        <span class="text-right font-italic text-black-50">2021-02-13</span>
+                        <pre>
+                    1
+                    2
+                    3
+                </pre>
+
+                    </div>
+                </div>
                 <div class="form-group">
                     {% csrf_token %}
-                    <label class="col-form-label" for="comment-text">处理意见：</label>
+                    <label class="col-form-label" for="orderModalCommentText">处理意见：</label>
                     <textarea class="form-control" name="orderModalCommentText" id="orderModalCommentText" cols="30"
                               rows="3"></textarea>
 
