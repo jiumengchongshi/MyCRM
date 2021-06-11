@@ -15,6 +15,11 @@ urlpatterns = [
     path('api/announcements/', views.announcements, name='api_announcements'),
     path('api/handover/', views.handover, name='api_handover'),
     path('api/orders/', views.Orders.as_view(), name='api_orders'),
-    path('api/order/<int:z_number>/', views.order, name='order'),
+    path('api/orders/<int:z_number>/', views.Orders.as_view(), name='api_order'),
+    path('api/comments/', views.comments, name='api_comments'),
+    path('api/users/', views.Users.as_view(), name='api_users'),
+    path('api/users/<str:role>/', views.Users.as_view(), name='api_usersByRole'),
+    path('api/paused_districts/', views.PausedDistricts.as_view(), name='api_paused_districts'),
+    path('api/shops/', views.Shops.as_view(), name='api_shops'),
 
 ]

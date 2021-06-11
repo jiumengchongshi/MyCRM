@@ -8,73 +8,245 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}MyCRM{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.2/css/all.css" rel="stylesheet">
-    <link rel="shortcut icon" href="{% static 'crm/images/favicon.ico' %}" />
+    <link rel="shortcut icon" href="{% static 'crm/images/favicon.ico' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'crm/style.css' %}">
     <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap-table/1.18.1/bootstrap-table.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.min.js"></script>
 </head>
 <body>
-    {% include 'navbar.html' %}
+{% include 'navbar.html' %}
 <div class="container-fluid">
     <div class="row">
         <main class="col-md-10" role="main" style="padding-left: 0px">
             {% block main %}
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-lg-3 col-xl-2">
-                            <div class="card text-white bg-light mb-3">
-                              <div class="card-header">
-                                  <div class="input-group mb-3">
-                                      <input type="search" class="form-control" placeholder="输入运单号搜索" name="searchbar" id="searchbar" onkeypress="">
-                                  </div>
-                              </div>
-                              <div class="card-body" style="height: 50rem">
-                                   <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                      <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
-                                      <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</a>
-                                      <a class="nav-link" id="v-pills-messages-tab" data-toggle="pill" href="#v-pills-messages" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</a>
-                                      <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill" href="#v-pills-settings" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</a>
-                                    </div>
-                              </div>
-                            </div>
 
-                        </div>
-                        <div class="col-lg-9 col-xl-10">
-                            <div class="tab-content" id="v-pills-tabContent">
-                              <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">Cillum ad ut irure tempor velit nostrud occaecat ullamco aliqua anim Lorem sint. Veniam sint duis incididunt do esse magna mollit excepteur laborum qui. Id id reprehenderit sit est eu aliqua occaecat quis et velit excepteur laborum mollit dolore eiusmod. Ipsum dolor in occaecat commodo et voluptate minim reprehenderit mollit pariatur. Deserunt non laborum enim et cillum eu deserunt excepteur ea incididunt minim occaecat.</div>
-                              <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">Culpa dolor voluptate do laboris laboris irure reprehenderit id incididunt duis pariatur mollit aute magna pariatur consectetur. Eu veniam duis non ut dolor deserunt commodo et minim in quis laboris ipsum velit id veniam. Quis ut consectetur adipisicing officia excepteur non sit. Ut et elit aliquip labore Lorem enim eu. Ullamco mollit occaecat dolore ipsum id officia mollit qui esse anim eiusmod do sint minim consectetur qui.</div>
-                              <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">Fugiat id quis dolor culpa eiusmod anim velit excepteur proident dolor aute qui magna. Ad proident laboris ullamco esse anim Lorem Lorem veniam quis Lorem irure occaecat velit nostrud magna nulla. Velit et et proident Lorem do ea tempor officia dolor. Reprehenderit Lorem aliquip labore est magna commodo est ea veniam consectetur.</div>
-                              <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">Eu dolore ea ullamco dolore Lorem id cupidatat excepteur reprehenderit consectetur elit id dolor proident in cupidatat officia. Voluptate excepteur commodo labore nisi cillum duis aliqua do. Aliqua amet qui mollit consectetur nulla mollit velit aliqua veniam nisi id do Lorem deserunt amet. Culpa ullamco sit adipisicing labore officia magna elit nisi in aute tempor commodo eiusmod.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             {% endblock %}
         </main>
 
 
         <div class="d-none d-xl-block col-md-2 bd-toc" aria-label="notice card">
             {% block notice %}
-                <div class="card" style="width: 18rem;">
-                  <div class="card-header">通知</div>
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                  </div>
-                </div>
+
             {% endblock %}
         </div>
     </div>
 </div>
 
+<!-- Order Modal -->
+<div class="modal fade bd-example-modal-lg" id="order-modal" tabindex="-1" role="dialog"
+     aria-labelledby="orderModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div><h5 class="modal-title" id="orderModalTitle">单号：<span class="text-primary"
+                                                                           id="orderModalNumber"></span>
+                </h5></div>
+                <div style="width: 10rem"></div>
+                <div><h5 class="modal-title">问题类型：<span class="text-success font-weight-bold"
+                                                        id="orderModalQuestionType"></span></h5></div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="orderModalBody">
+                <h6>问题描述 <span class="float-right">当前客服：<span class="text-success"
+                                                              id="orderModalServiceName">ceshi</span></span>&nbsp;&nbsp;
+                </h6>
+                <div class="alert alert-info">
+                    <pre id="orderModalQuestionText"></pre>
+                    <span class="text-right text-primary" id="orderModalCustomer"></span><span
+                        id="orderModalCreateTime"></span>
+                </div>
+                <div id="orderModalCommentList"></div>
+                <div id="commentForm">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <label class="col-form-label" for="orderModalCommentText">处理意见：</label>
+                        <textarea class="form-control" name="orderModalCommentText" id="orderModalCommentText" cols="30"
+                                  rows="3"></textarea>
+
+                    </div>
+                    <div style="text-align: center; width: 100%;">
+                        <button type="button" class="btn btn-primary" style="width: 10rem;" id="orderModalSubmit">提交
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- message modal-->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="messageModalBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- PausedDistrict modal-->
+<div class="modal fade" id="pausedDistrictModal" tabindex="-1" aria-labelledby="pausedDistrictModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pausedDistrictModalLabel">编辑停发地区</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="pausedDistrictModalBody">
+                <div id="pausedDistrictForm">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <label class="col-form-label" for="pausedDistrictForModal"><span class="text-danger">*</span>省份：<span
+                                class="text-primary" id="pausedDistrictProvince"></span></label>
+                        <div id="pausedDistrictForModal"></div>
+                    </div>
+                    <div style="text-align: center; width: 100%;">
+                        <button type="button" class="btn btn-primary" style="width: 10rem;"
+                                id="pausedDistrictModalSubmit">提交
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="width: 10rem;">取消
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- User modal-->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog"
+     aria-labelledby="userModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalTitle">用户</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="userModalBody">
+                <form>
+                    <div class="form-group">
+                        <label for="newUserName" class="col-form-label"><span
+                                class="text-danger">*</span>用户名：</label>
+                        <input type="text" class="form-control" id="newUserName">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserPhone" class="col-form-label"><span
+                                class="text-danger">*</span>联系电话：</label>
+                        <input type="number" class="form-control" id="newUserPhone"></input>
+                    </div>
+                </form>
+
+                <div style="text-align: center; width: 100%;">
+                    <button type="button" class="btn btn-primary" style="width: 10rem;" id="userModalSubmit">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Shop modal-->
+<div class="modal fade" id="shopModal" tabindex="-1" role="dialog"
+     aria-labelledby="shopModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shopModalTitle">店铺</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="shopModalBody">
+                <div class="form-group">
+                    <label for="newShopName" class="col-form-label"><span
+                            class="text-danger">*</span>店铺名称：</label>
+                    <input type="text" class="form-control" id="newShopName">
+                    <label for="newShopkeeper" class="col-form-label"><span
+                            class="text-danger">*</span>客户：</label>
+                    <input type="text" class="form-control" id="newShopkeeper">
+                </div>
+
+                <div style="text-align: center; width: 100%;">
+                    <button type="button" class="btn btn-primary" style="width: 10rem;" id="shopModalSubmit">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% block change_pwd %}
+<!-- Change_pwd modal-->
+<div class="modal fade" id="change_pwdModal" tabindex="-1" role="dialog"
+     aria-labelledby="change_pwdModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">修改密码</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="originalPassword" class="col-form-label"><span
+                            class="text-danger">*</span>原密码：<span class="text-secondary">密码长度为6-14位</span></label>
+                    <input type="password" class="form-control" id="originalPassword" maxlength="14">
+                    <label for="newPassword1" class="col-form-label"><span
+                            class="text-danger">*</span>新密码：</label>
+                    <input type="password" class="form-control" id="newPassword1" maxlength="14">
+                    <label for="newPassword2" class="col-form-label"><span
+                            class="text-danger">*</span>重复新密码：</label>
+                    <input type="password" class="form-control" id="newPassword2" maxlength="14">
+                </div>
+
+                <div style="text-align: center; width: 100%;">
+                    <button type="button" class="btn btn-primary" style="width: 10rem;" id="change_pwdSubmit">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block modal %}
+
+{% endblock %}
 
 </body>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap-table/1.18.1/bootstrap-table.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap-table/1.18.1/locale/bootstrap-table-zh-CN.js"></script>
 <script src="/static/crm/mycrm.js"></script>

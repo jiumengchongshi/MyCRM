@@ -14,10 +14,15 @@
                 </div>
                 <div :id="collapse(index)" class="collapse" aria-labelledby="notice(index)" data-parent="#handover">
                   <div class="card-body text-info">
+                      <p class="text-primary">交接给：[[item.recipient]]</p>
                       <pre>[[item.handover_text]]</pre>
+                      <span class="float-right">[[item.user]]</span>
                   </div>
                 </div>
             </div>
         </div>
     </template>
+
 </div>
+
+

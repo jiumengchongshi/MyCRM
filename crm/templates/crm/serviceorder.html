@@ -1,17 +1,29 @@
-<div style="height: 3rem"></div>
-<h3>处理中的问题</h3>
-<div style="height: 1rem"></div>
 <div class="container-flout">
 
+    <!--
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <ul class="list-group list-group-horizontal" style="margin: 3rem">
+                <li class="list-group-item">改地址&nbsp;<span class="badge badge-primary badge-pill">14</span></li>
+                <li class="list-group-item">拦截&nbsp;<span class="badge badge-primary badge-pill">14</span></li>
+                <li class="list-group-item">催派&nbsp;<span class="badge badge-primary badge-pill">14</span></li>
+                <li class="list-group-item">签收未收到&nbsp;<span class="badge badge-primary badge-pill">14</span></li>
+                <li class="list-group-item">查询&nbsp;<span class="badge badge-primary badge-pill">14</span></li>
+            </ul>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    -->
 
-    <div class="btn-group" style="position: absolute; margin-top: 10px;">
+    <div class="btn-group" style="position: absolute; margin-top: 2rem;">
         <div class="p-2"><a href="javascript:void(0);" class="btn btn-primary" id="service-waiting">接单（待处理<span
                 class="text-warning font-weight-bold" id="waiting-orders-quantity"></span>）</a>
         </div>
         <div class="p-2"><a href="javascript:void(0);" class="btn btn-warning" id="service-handover">交接</a>
         </div>
     </div>
-
+    <div style="height: 2rem;"></div>
     <table class="text-center"
            data-toggle="table"
            data-url="/crm/api/orders/?order_status=processing"
@@ -21,7 +33,9 @@
            data-auto-refresh="true"
            data-show-columns="true"
            data-search="true"
-           data-locale="zh-CN">
+           data-locale="zh-CN"
+           id="processingQuestionList"
+           name="orderTable">
         <thead>
         <tr>
             <th data-field="" data-formatter="tableIndex" data-width="5px">序号</th>
@@ -39,114 +53,4 @@
 </div>
 
 
-<!-- Order Modal -->
-<div class="modal fade bd-example-modal-lg" id="order-modal" tabindex="-1" role="dialog"
-     aria-labelledby="orderModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div><h5 class="modal-title" id="orderModalTitle">单号：<span class="text-primary"
-                                                                           id="orderModalNumber"></span>
-                </h5></div>
-                <div style="width: 10rem"></div>
-                <div><h5 class="modal-title">问题类型：<span class="text-success font-weight-bold"
-                                                        id="orderModalQuestionType"></span></h5></div>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <h6>问题描述</h6>
-                <pre class="alert alert-info" id="orderModalQuestionText">
-                    1
-                    2
-                    3
-                </pre>
-                <div class="alert alert-dark">
-                    <div class="alert-light">
-                        <span class="text-right text-warning">客服：测试客服</span>
-                        <span class="text-right font-italic text-black-50">2021-02-13</span>
-                        <pre>
-                    1
-                    2
-                    3
-                </pre>
 
-                    </div>
-                    <div class="alert-light">
-                        <span class="text-right text-primary">客户：测试客户</span>
-                        <span class="text-right font-italic text-black-50">2021-02-13</span>
-                        <pre>
-                    1
-                    2
-                    3
-                </pre>
-
-                    </div>
-                    <div class="alert-light">
-                        <span class="text-right text-warning">客服：测试客服</span>
-                        <span class="text-right font-italic text-black-50">2021-02-13</span>
-                        <pre>
-                    1
-                    2
-                    3
-                </pre>
-
-                    </div>
-                    <div class="alert-light">
-                        <span class="text-right text-warning">客服：测试客服</span>
-                        <span class="text-right font-italic text-black-50">2021-02-13</span>
-                        <pre>
-                    1
-                    2
-                    3
-                </pre>
-
-                    </div>
-                    <div class="alert-light">
-                        <span class="text-right text-warning">客服：测试客服</span>
-                        <span class="text-right font-italic text-black-50">2021-02-13</span>
-                        <pre>
-                    1
-                    2
-                    3
-                </pre>
-
-                    </div>
-                    <div class="alert-light">
-                        <span class="text-right text-warning">客服：测试客服</span>
-                        <span class="text-right font-italic text-black-50">2021-02-13</span>
-                        <pre>
-                    1
-                    2
-                    3
-                </pre>
-
-                    </div>
-                    <div class="alert-light">
-                        <span class="text-right text-warning">客服：测试客服</span>
-                        <span class="text-right font-italic text-black-50">2021-02-13</span>
-                        <pre>
-                    1
-                    2
-                    3
-                </pre>
-
-                    </div>
-                </div>
-                <div class="form-group">
-                    {% csrf_token %}
-                    <label class="col-form-label" for="orderModalCommentText">处理意见：</label>
-                    <textarea class="form-control" name="orderModalCommentText" id="orderModalCommentText" cols="30"
-                              rows="3"></textarea>
-
-                </div>
-                <div style="text-align: center; width: 100%;">
-                    <button type="button" class="btn btn-primary" style="width: 10rem;" id="orderModalSubmit">提交
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>

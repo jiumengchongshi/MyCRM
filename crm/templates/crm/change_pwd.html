@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}首次登陆修改密码{% endblock %}
+
+{% block change_pwd %}
+<!-- Change_pwd modal-->
+
+<div class="d-flex justify-content-center">
+        <div class="card" style="width: 20%; margin-top: 3rem; align-self: auto;">
+            <div class="card-header text-center">
+                <h5>首次登陆请修改密码！</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="originalPassword" class="col-form-label"><span
+                            class="text-danger">*</span>原密码：<span class="text-secondary">密码长度为6-14位</span></label>
+                    <input type="password" class="form-control" id="originalPassword" maxlength="14">
+                    <label for="newPassword1" class="col-form-label"><span
+                            class="text-danger">*</span>新密码：</label>
+                    <input type="password" class="form-control" id="newPassword1" maxlength="14">
+                    <label for="newPassword2" class="col-form-label"><span
+                            class="text-danger">*</span>重复新密码：</label>
+                    <input type="password" class="form-control" id="newPassword2" maxlength="14">
+                </div>
+
+                <div style="text-align: center; width: 100%;">
+                    <button type="button" class="btn btn-primary" style="width: 10rem;" id="change_pwdSubmit">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock %}

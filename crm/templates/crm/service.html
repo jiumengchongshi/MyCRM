@@ -9,8 +9,8 @@
                 <div class="card text-white bg-light mb-3">
                     <div class="card-header">
                         <div class="input-group mb-3">
-                            <input type="search" class="form-control" placeholder="输入运单号搜索" name="searchbar"
-                                   id="searchbar" onkeypress="">
+                            <input type="search" class="form-control" placeholder="输入运单号搜索" name="baseSearchBar"
+                                   id="baseSearchBar">
                         </div>
                     </div>
                     <div class="card-body" style="height: 50rem">
@@ -21,6 +21,10 @@
                             <a class="nav-link active" id="v-pills-workbench-tab" data-toggle="pill"
                                href="#v-pills-workbench" role="tab" aria-controls="v-pills-workbench"
                                aria-selected="true">我的工作台</a>
+                            <a class="nav-link" id="v-pills-finished-tab" data-toggle="pill" href="#v-pills-finished"
+                               role="tab" aria-controls="v-pills-finished" aria-selected="false">已完成的问题</a>
+                            <a class="nav-link" id="v-pills-paused-tab" data-toggle="pill" href="#v-pills-paused"
+                               role="tab" aria-controls="v-pills-paused" aria-selected="false">停发地区查询</a>
                         </div>
                     </div>
                 </div>
@@ -34,7 +38,53 @@
                     </div>
                     <div class="tab-pane fade show active" id="v-pills-workbench" role="tabpanel"
                          aria-labelledby="v-pills-workbench-tab">
-                        {% include 'crm/serviceorder.html' %}
+                        <div class="btn-group" style="position: absolute; margin-top: 2rem;">
+                            <div class="p-2"><a href="javascript:void(0);" class="btn btn-primary" id="service-waiting">接单（待处理<span
+                                    class="text-warning font-weight-bold" id="waiting-orders-quantity"></span>）</a>
+                            </div>
+                            <div class="p-2"><a href="javascript:void(0);" class="btn btn-warning"
+                                                id="service-handover">交接</a>
+                            </div>
+                        </div>
+                        <div style="height: 2rem;"></div>
+                        <table id="serviceProcessingOrders" name="orderTable"></table>
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-finished" role="tabpanel"
+                         aria-labelledby="v-pills-finished-tab">
+                        <div style="height: 3rem"></div>
+                        <p class="text-info">温馨提示：双击问题所在行，可查看问题详情</p>
+                        <div class="container-flout">
+                            <table class="text-center"
+                                   data-toggle="table"
+                                   data-url="/crm/api/orders/?order_status=finished"
+                                   data-pagination="true"
+                                   data-toolbar="#ratoolbar"
+                                   data-show-refresh="true"
+                                   data-auto-refresh="true"
+                                   data-show-columns="true"
+                                   data-search="true"
+                                   data-locale="zh-CN"
+                                   id="finishedQuestionFS"
+                                   name="orderTable">
+                                <thead>
+                                <tr>
+                                    <th data-field="" data-formatter="tableIndex" data-width="5px">序号</th>
+                                    <th data-field="zto_number">快递单号</th>
+                                    <th data-sortable="true" data-field="question_types">问题类型</th>
+                                    <th data-field="question_text" class="text-truncate">问题描述</th>
+                                    <th data-sortable="true" data-field="order_status">处理状态</th>
+                                    <th data-sortable="true" data-field="update_time">更新时间</th>
+                                    <th data-sortable="true" data-field="customer">客户姓名</th>
+                                    <th data-sortable="true" data-field="group">客户组</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-paused" role="tabpanel"
+                         aria-labelledby="v-pills-paused-tab">
+                        <table class="table table-condensed" name="pausedDistrictsST"
+                               style="word-break:break-all;"></table>
                     </div>
                 </div>
             </div>
@@ -43,6 +93,50 @@
 
 {% endblock %}
 
+{% block modal %}
+    <!-- Handover Modal -->
+    <div class="modal fade bd-example-modal-lg" id="handover-modal" tabindex="-1" role="dialog"
+         aria-labelledby="handoverModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="handoverModalTitle">客服交接日报</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="handoverModalBody">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="recipientSelect">交接人：</label>
+                        </div>
+                        <select type="text" class="custom-select" id="recipientSelect"></select>
+
+                    </div>
+                    <p class="inline text-danger">温馨提示：交接后所有处理中的问题都将移交给被交接人，请填写后续客服应关注的注意事项。</p>
+                    <div id="handoverForm">
+                        <div class="form-group">
+                            {% csrf_token %}
+                            <label class="col-form-label" for="handoverTitle"><span
+                                    class="text-danger">*</span>标题：</label>
+                            <input type="text" id="handoverTitle" class="form-control">
+                            <label class="col-form-label" for="handoverModalText"><span class="text-danger">*</span>交接内容：</label>
+                            <textarea class="form-control" name="handoverModalText" id="handoverModalText" cols="30"
+                                      rows="10" required></textarea>
+
+                        </div>
+                        <div style="text-align: center; width: 100%;">
+                            <button type="button" class="btn btn-primary" style="width: 10rem;"
+                                    id="handoverModalSubmit">提交
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
 {% block notice %}
     <div class="card" style="height: 50rem">
@@ -50,10 +144,11 @@
         <div class="card-body">
             <h4 class="card-title text-center">{{ notice.title }}</h4>
             <p class="card-text text-wrap">
+                <span class="font-italic text-warning">{{ notice.user }}</span>&nbsp;交接给：<span
+                    class="font-italic text-primary">{{ notice.recipient }}</span>
             <pre>{{ notice.handover_text }}</pre>
             </p>
             <div style="height: 3rem"></div>
-            <p class="text-right font-italic text-warning">{{ notice.user }}</p>
             <p class="text-right font-italic text-black-50">{{ notice.pub_date }}</p>
         </div>
     </div>

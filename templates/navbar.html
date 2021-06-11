@@ -8,8 +8,10 @@
         {% endif %}
     <div class="justify-content-end">
           {% if username %}
-              <span class="navbar-text">欢迎光临！{{ username }}</span>&nbsp;&nbsp;
-              <a href="{% url 'crm:logout' %}" class="btn btn-outline-success my-2 my-sm-0" role="button">退出</a>
+              <span class="navbar-text">欢迎！{{ username }}</span>&nbsp;&nbsp;
+              <button class="btn btn-link text-light my-2 my-sm-0" data-toggle="modal"
+                                        data-target="#change_pwdModal">修改密码</button>
+              <a href="{% url 'crm:logout' %}" class="btn btn-outline-warning my-2 my-sm-0" role="button">退出</a>
           {% else %}
               <a href="{% url 'crm:login' %}" class="btn btn-outline-success my-2 my-sm-0" role="button">请登录！</a>
           {% endif %}

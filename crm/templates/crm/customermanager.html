@@ -1,13 +1,202 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>customer manager</title>
-</head>
-<body>
-<h1>The customer-manager page</h1>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}customer manager{% endblock %}
+
+{% block main %}
+    <div class="container-fluid" style="padding-left: 0px">
+        <div class="row">
+            <div class="col-3 col-xl-2">
+                <div class="card text-white bg-light mb-3">
+                    <div class="card-header">
+                        <div class="input-group mb-3">
+                            <input type="search" class="form-control" placeholder="输入运单号搜索" name="baseSearchBar"
+                                   id="baseSearchBar">
+                        </div>
+                    </div>
+                    <div class="card-body" style="height: 50rem">
+                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                             aria-orientation="vertical">
+                            <a class="nav-link" id="v-pills-announcement-tab" data-toggle="pill"
+                               href="#v-pills-announcement" role="tab" aria-controls="v-pills-announcement"
+                               aria-selected="false">公告通知</a>
+                            <a class="nav-link  active" id="v-pills-order-tab" data-toggle="pill" href="#v-pills-order"
+                               role="tab" aria-controls="v-pills-order" aria-selected="true">我的工作台</a>
+                            <a class="nav-link" id="v-pills-finished-tab" data-toggle="pill" href="#v-pills-finished"
+                               role="tab" aria-controls="v-pills-finished" aria-selected="false">已完成的问题</a>
+                            <a class="nav-link" id="v-pills-paused-tab" data-toggle="pill" href="#v-pills-paused"
+                               role="tab" aria-controls="v-pills-paused" aria-selected="false">停发地区查询</a>
+                            <a class="nav-link" id="v-pills-customers-tab" data-toggle="pill" href="#v-pills-customers"
+                               role="tab" aria-controls="v-pills-customers" aria-selected="false">客户管理</a>
+                            <a class="nav-link" id="v-pills-shops-tab" data-toggle="pill" href="#v-pills-shops"
+                               role="tab" aria-controls="v-pills-shops" aria-selected="false">店铺管理</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-9 col-xl-10">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade" id="v-pills-announcement" role="tabpanel"
+                         aria-labelledby="v-pills-announcement-tab">
+                        {% include 'crm/announcement.html' %}
+                    </div>
+                    <div class="tab-pane fade show active" id="v-pills-order" role="tabpanel"
+                         aria-labelledby="v-pills-order-tab">
+                        <div class="btn-group" style="position: absolute; margin-top: 2rem;">
+                            <div class="p-2">
+                                <button class="btn btn-primary" data-toggle="modal"
+                                        data-target="#createOrderModal">提交问题
+                                </button>
+                            </div>
+                            <div class="p-2">
+                                <button class="btn btn-warning" data-toggle="modal"
+                                        data-target="#interceptModal">拦截退回
+                                </button>
+                            </div>
+                        </div>
+                        <div style="height: 2rem"></div>
+                        <table id="customerOrdersTable" name="orderTable"></table>
+
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-finished" role="tabpanel"
+                         aria-labelledby="v-pills-finished-tab">
+                        <h3 style="margin-top: 2rem">已完成的问题列表</h3>
+                        <table data-toggle="table" id="customerFinishedOrdersTable" name="orderTable"></table>
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-paused" role="tabpanel" aria-labelledby="v-pills-paused-tab">
+                        <table class="table table-condensed" name="pausedDistrictsST"
+                               style="word-break:break-all;"></table>
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-customers" role="tabpanel"
+                         aria-labelledby="v-pills-customers-tab">
+                        <div class="btn-group" style="position: absolute; margin-top: 2rem;">
+                            <div class="p-2">
+                                <button class="btn btn-success" id="createUserBtn">新建客户
+                                </button>
+                            </div>
+                        </div>
+                        <div style="height: 2rem"></div>
+                        <table id="customersTable" name="usersTable"></table>
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-shops" role="tabpanel"
+                         aria-labelledby="v-pills-shops-tab">
+                        <div class="btn-group" style="position: absolute; margin-top: 2rem;">
+                            <div class="p-2">
+                                <button class="btn btn-success" id="createShopBtn">新建店铺</button>
+                            </div>
+                        </div>
+                        <div style="height: 2rem"></div>
+                        <table id="shopsTable" name="shopsTable"></table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block notice %}
+    <div class="card" style="height: 50rem">
+        <div class="card-header text-center">{{ group_name }}</div>
+        <div class="card-body">
+            <h4 class="card-title text-center">{{ notice.title }}</h4>
+            <p class="card-text text-wrap">
+            <pre>{{ notice.notice }}</pre>
+            </p>
+            <div style="height: 3rem"></div>
+            <p class="text-right font-italic text-warning">{{ notice.user }}</p>
+            <p class="text-right font-italic text-black-50">{{ notice.pub_date }}</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modal %}
+    <!--create order modal-->
+    <div class="modal fade bd-example-modal-lg" id="createOrderModal" tabindex="-1" role="dialog"
+         aria-labelledby="createOrderModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">提交问题</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="questionTypesForModal">问题类型：</label>
+                        </div>
+                        <select type="text" class="custom-select" id="questionTypesForModal">
+                            <option disabled="disabled" selected>请选择问题类型</option>
+                            <option value="GDZ">改地址</option>
+                            <option value="CP">催派</option>
+                            <option value="YS">签收未收到</option>
+                            <option value="CX">查询</option>
+
+                        </select>
+                    </div>
+                    <div id="createOrderForm">
+                        <div class="form-group">
+                            {% csrf_token %}
+                            <label class="col-form-label" for="createOrderNumber"><span
+                                    class="text-danger">*</span>单号：&nbsp;&nbsp;<span class="text-danger"
+                                                                                     id="create_zto_number_danger"></span>&nbsp;&nbsp;<span
+                                    id="create_zto_number_result"></span></label>
+                            <input type="number" id="createOrderNumber" class="form-control">
+                            <label class="col-form-label" for="questionTextForModal"><span class="text-danger">*</span>问题描述：</label>
+                            <textarea class="form-control" name="questionTextForModal" id="questionTextForModal"
+                                      cols="30"
+                                      rows="5" required></textarea>
+
+                        </div>
+                        <div style="text-align: center; width: 100%;">
+                            <button type="button" class="btn btn-primary" style="width: 10rem;"
+                                    id="createOrderModalSubmit">提交
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- intercept modal-->
+    <div class="modal fade" id="interceptModal" tabindex="-1" role="dialog"
+         aria-labelledby="interceptModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">批量拦截</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="interceptForm">
+                        <div class="form-group">
+                            {% csrf_token %}
+                            <label class="col-form-label" for="interceptOrdersForModal"><span
+                                    class="text-danger">*</span>请填写需要拦截的单号：&nbsp;&nbsp;<span class="text-danger"
+                                                                                             id="interceptWarning"></span></label>
+                            <textarea class="form-control" name="interceptOrdersForModal" id="interceptOrdersForModal"
+                                      cols="14"
+                                      rows="10" placeholder="多个单号请以逗号分隔或每个单号单独占一行" required></textarea>
+
+                        </div>
+                        <div style="text-align: center; width: 100%;">
+                            <button type="button" class="btn btn-primary" style="width: 10rem;"
+                                    id="interceptModalSubmit">提交
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
