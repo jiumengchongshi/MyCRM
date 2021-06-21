@@ -107,7 +107,6 @@ class Comment(models.Model):
 
 
 class Handover(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     handover_text = models.TextField()
     recipient = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='recipient')

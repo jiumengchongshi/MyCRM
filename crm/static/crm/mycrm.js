@@ -20,6 +20,20 @@ function freeze_user(action, user_id) {
     );
 }
 
+
+function emergencyStyle(value) {
+    let a = "";
+    if (value == '加急') {
+        a = '<span class="badge badge-danger">' + value + '</span>';
+    } else if (value == '待回复') {
+        a = '<span class="badge badge-primary">' + value + '</span>';
+    } else {
+        a = value;
+    }
+    return a
+
+}
+
 //Load the comments list.
 function loadCommentList(data) {
     let comments = data.comments;
@@ -37,7 +51,9 @@ function loadCommentList(data) {
             let create_time = comments[i].create_time;
             if (role === "C") {  //Render user names in different colors for different roles.
                 $('#orderModalCommentList').append("<div><span class=\"text-right text-primary\">客户：" + speaker + "</span><span class=\"text-right font-italic text-black-50\">" + create_time + "</span><pre>" + comment + "</pre></div>")
-            } else {
+            } else if (role === 'CM'){
+                $('#orderModalCommentList').append("<div><span class=\"text-right text-danger\">客户经理：" + speaker + "</span><span class=\"text-right font-italic text-black-50\">" + create_time + "</span><pre>" + comment + "</pre></div>")
+            }else{
                 $('#orderModalCommentList').append("<div><span class=\"text-right text-success\">客服：" + speaker + "</span><span class=\"text-right font-italic text-black-50\">" + create_time + "</span><pre>" + comment + "</pre></div>")
             }
         }
@@ -156,6 +172,7 @@ window.onload = function () {
             },
         });
     }
+
 
     $('#createOrderModalSubmit').click(function () {
         $('#create_zto_number_danger').text('');
@@ -286,7 +303,7 @@ window.onload = function () {
                     } else {
                         $('#recipientSelect').text('');  //Empty the list.
                         $('#recipientSelect').append('<option disabled="disabled" selected>请选择要交接的客服</option>');
-                        for (i in userList) {
+                        for ( i in userList) {
                             $('#recipientSelect').append('<option value=' + userList[i][0] + '>' + userList[i][1] + '</option>');
                         }
                         $('#handover-modal').modal();
@@ -299,6 +316,55 @@ window.onload = function () {
         );
 
     });
+
+
+    //load the allot modal
+    if (document.getElementById("allotModal")) {
+        $.get(
+            '/crm/api/users/S/',
+            function (data) {
+                for ( u in data){
+                    let user = data[u];
+                    console.log(user);
+                    if (user.status == '启用'){
+                        $('#allotUsername').append('<option value=' + user.id + '>' + user.name + '</option>');
+                    }
+
+                }
+
+            }
+        );
+    }
+
+
+    $('#allotModalSubmit').click(function () {
+        let z_number = $('#allotModalNumber').text();
+        let service_id = $('#allotUsername').val();
+        if (service_id){
+            $.post(
+                '/crm/api/orders/',
+                {
+                    'action': 'allot',
+                    'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+                    'z_number': z_number,
+                    'service_id': service_id
+                },
+                function (data) {
+                    let message = data.message;
+                    if (message == 'success'){
+                        $('#allotModal').modal('hide');
+                        $('#unsettledOrders').bootstrapTable('refresh');
+                    }else{
+                        alert(message);
+                    }
+                }
+            );
+        }else{
+            alert('请选择要分配的客服！');
+        }
+
+    });
+
 
     $('#handoverModalSubmit').click(function () {
         let recipient = $('#recipientSelect').val();
@@ -321,10 +387,10 @@ window.onload = function () {
                 },
                 function (data) {
                     if (data.message == 'success') {
-                        alert('提交成功！')
+                        $('#serviceProcessingOrders').bootstrapTable('refresh');
+                        $('#handover-modal').modal('hide');
+                        alert('提交成功！');
                     }
-                    $('#handover-modal').modal('hide');
-                    $('#processingQuestionList').bootstrapTable('refresh');
                 }
             );
         }
@@ -389,9 +455,12 @@ window.onload = function () {
             title: "emergency",
             visible: false,
         }, {
-            field: "order_emergency_text",
             title: "状态",
             align: 'center',
+            formatter: function (e, row, value) {
+                let a = row.order_emergency_text;
+                return emergencyStyle(a);
+            }
         }, {
             field: "update_time",
             title: "更新时间",
@@ -765,7 +834,7 @@ window.onload = function () {
             events: {
                 'click button[title=编辑]': function (e, value, row, index) {
                     $('#pausedDistrictProvince').text(row.province);
-                    $('#pausedDistrictForModal').html('<textarea class="form-control" name="pausedDistrictForModal" cols="50" rows="10" required>' + row.area + '</textarea>');
+                    $('#pausedDistrictForModal').html('<textarea class="form-control" id="pausedArea" cols="50" rows="10" required>' + row.area + '</textarea>');
                     $('#pausedDistrictModal').modal();
                 }
             }
@@ -775,7 +844,7 @@ window.onload = function () {
 
     $('#pausedDistrictModalSubmit').click(function () {
         let province = $('#pausedDistrictProvince').text();
-        let area = $('#pausedDistrictForModal').val();
+        let area = $('#pausedArea').val();
         $.post(
             '/crm/api/paused_districts/',
             {
@@ -929,9 +998,12 @@ window.onload = function () {
             title: "emergency",
             visible: false,
         }, {
-            field: "order_emergency_text",
             title: "状态",
             align: 'center',
+            formatter: function (e, row, value) {
+                let a = row.order_emergency_text;
+                return emergencyStyle(a);
+            }
         }, {
             field: "update_time",
             title: "更新时间",
@@ -958,6 +1030,105 @@ window.onload = function () {
                     getOrder(row.zto_number);
                 },
                 'click button[title=处理完毕]': function (e, value, row) {
+                    let finish = confirm('请确认问题已经处理完毕');
+                    if (finish == true) {
+                        $.post(
+                            '/crm/api/orders/',
+                            {
+                                'action': 'finish',
+                                'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+                                'z_number': row.zto_number,
+                            },
+                            function (data) {
+                                if (data.message == 'success') {
+                                    $('#processingQuestionList').bootstrapTable('refresh');
+                                } else {
+                                    alert(data.message);
+                                }
+
+                            }
+                        )
+                    }
+
+                }
+            }
+        }]
+    });
+
+
+    $('#unsettledOrders').bootstrapTable({
+        url: '/crm/api/orders/?order_status=processing',
+        method: 'get',                      //请求方式（*）
+        toolbar: '#toolbar',                //工具按钮用哪个容器
+        striped: true,                      //是否显示行间隔色
+        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        pagination: true,                   //是否显示分页（*）
+        sortable: true,                     //是否启用排序
+        sortName: 'order_emergency',           //默认排序字段
+        sortOrder: "asc",                   //排序方式
+        sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+        pageNumber: 1,                       //初始化加载第一页，默认第一页
+        pageSize: 10,                       //每页的记录行数（*）
+        search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+        strictSearch: false,                //是否精确匹配
+        showColumns: true,                  //是否显示所有的列
+        showRefresh: true,                  //是否显示刷新按钮
+        minimumCountColumns: 2,             //最少允许的列数
+        clickToSelect: true,                //是否启用点击选中行
+        detailView: false,                   //是否显示父子表
+        columns: [{
+            field: "zto_number",
+            title: "快递单号",
+            align: 'center',
+        }, {
+            field: "question_types",
+            title: "问题类型",
+            align: 'center',
+            sortable: true,
+        }, {
+            field: "question_text",
+            title: "问题描述",
+            align: 'center',
+            class: "text-truncate",
+        }, {
+            field: "order_emergency",
+            title: "emergency",
+            visible: false,
+        }, {
+            title: "状态",
+            align: 'center',
+            formatter: function (e, row, value) {
+                let a = row.order_emergency_text;
+                return emergencyStyle(a);
+            }
+        }, {
+            field: "update_time",
+            title: "更新时间",
+            align: 'center',
+            sortable: true,
+        }, {
+            field: "service",
+            title: "客服",
+            align: 'center',
+        }, {
+            field: "group",
+            title: "客户组",
+            align: 'center',
+        }, {
+            title: "操作",
+            align: 'center',
+            formatter: function (value, row, index) {
+                return '<button class="btn btn-success btn-sm" title="分配">分配</button> '
+                    + '<button class="btn btn-danger btn-sm" title="关闭问题">关闭问题</button>';
+
+            },
+            events: {
+                'click button[title=分配]': function (e, value, row) {
+                    $('#allotModalNumber').text(row.zto_number);
+                    $('#allotModalType').text(row.question_types);
+                    $('#allotModal').modal();
+                },
+                'click button[title=关闭问题]': function (e, value, row) {
                     let finish = confirm('请确认问题已经处理完毕');
                     if (finish == true) {
                         $.post(
@@ -1125,7 +1296,7 @@ window.onload = function () {
     $('#shopModalSubmit').click(function () {
         let shop_name = $('#newShopName');
         let shopkeeper = $('#newShopkeeper');
-        if (shop_name.val().trim() && shopkeeper.val().trim()){
+        if (shop_name.val().trim() && shopkeeper.val().trim()) {
             $.post(
                 '/crm/api/shops/',
                 {
@@ -1135,9 +1306,186 @@ window.onload = function () {
                 },
                 function (data) {
                     let message = data.message;
-                    if (message == 'success'){
+                    if (message == 'success') {
                         $('#shopModal').modal('hide');
                         $('table[name="shopsTable"]').bootstrapTable('refresh');
+                    } else {
+                        alert(message);
+                    }
+
+                }
+            );
+        } else {
+            alert('店铺名称、客户名称不能为空！');
+        }
+
+    });
+
+
+    $('#servicesTable').bootstrapTable({
+        url: '/crm/api/users/S/',
+        method: 'get',                      //请求方式（*）
+        toolbar: '#toolbar',                //工具按钮用哪个容器
+        striped: true,                      //是否显示行间隔色
+        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        pagination: true,                   //是否显示分页（*）
+        sortable: true,                     //是否启用排序
+        sortName: 'status',           //默认排序字段
+        sortOrder: "desc",                   //排序方式
+        sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+        pageNumber: 1,                       //初始化加载第一页，默认第一页
+        pageSize: 10,                       //每页的记录行数（*）
+        search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+        strictSearch: false,                //是否精确匹配
+        showColumns: true,                  //是否显示所有的列
+        showRefresh: true,                  //是否显示刷新按钮
+        minimumCountColumns: 2,             //最少允许的列数
+        clickToSelect: true,                //是否启用点击选中行
+        detailView: false,                   //是否显示父子表
+        columns: [{
+            field: "id",
+            title: 'ID',
+            align: 'center',
+        }, {
+            field: "name",
+            title: "客服姓名",
+            align: 'center',
+            sortable: true,
+        }, {
+            field: "phone",
+            title: "手机号",
+        }, {
+            field: "status",
+            title: "状态",
+            align: 'center',
+            sortable: true,
+        }, {
+            title: "操作",
+            align: 'center',
+            formatter: function (e, value) {
+                if (value.status == '启用') {
+                    return '<button class="btn btn-success btn-sm" title="编辑用户">编辑</button> '
+                        + '<button class="btn btn-danger btn-sm" title="冻结用户">冻结用户</button>'
+                } else {
+                    return '<button class="btn btn-success btn-sm" title="编辑用户">编辑</button> '
+                        + '<button class="btn btn-warning btn-sm" title="解除冻结">解除冻结</button>'
+                }
+
+            },
+            events: {
+                'click button[title=编辑用户]': function (e, value, row, index) {
+                    $('#newUserName').val(row.name);
+                    $('#newUserName').attr("readonly", true);
+                    $('#newUserPhone').val(row.phone);
+                    $('#userModal').modal();
+
+                },
+                'click button[title=冻结用户]': function (e, value, row) {
+                    let str = '确认要冻结 ' + row.name + ' 吗？冻结之后此用户将无法登陆系统。';
+                    let freeze = confirm(str);
+                    if (freeze) {
+                        freeze_user('freeze', row.id);
+                    }
+                },
+                'click button[title=解除冻结]': function (e, value, row, index) {
+                    let str = '确认要解除 ' + row.name + ' 的冻结状态吗？';
+                    let freeze = confirm(str);
+                    if (freeze) {
+                        freeze_user('unfreeze', row.id);
+                    }
+                },
+            }
+        }]
+    });
+
+
+    $('#announcementsTable').bootstrapTable({
+        url: '/crm/api/announcements/',
+        method: 'get',                      //请求方式（*）
+        toolbar: '#toolbar',                //工具按钮用哪个容器
+        striped: true,                      //是否显示行间隔色
+        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        pagination: true,                   //是否显示分页（*）
+        sortable: true,                     //是否启用排序
+        sortName: 'pub_date',           //默认排序字段
+        sortOrder: "desc",                   //排序方式
+        sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+        pageNumber: 1,                       //初始化加载第一页，默认第一页
+        pageSize: 10,                       //每页的记录行数（*）
+        search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+        strictSearch: false,                //是否精确匹配
+        showColumns: true,                  //是否显示所有的列
+        showRefresh: true,                  //是否显示刷新按钮
+        minimumCountColumns: 2,             //最少允许的列数
+        clickToSelect: true,                //是否启用点击选中行
+        detailView: false,                   //是否显示父子表
+        columns: [{
+            field: "id",
+            title: 'ID',
+            align: 'center',
+        }, {
+            field: "title",
+            title: "标题",
+            align: 'center',
+            sortable: true,
+        }, {
+            field: "notice",
+            title: "内容",
+            class: "text-truncate",
+        }, {
+            field: "user",
+            title: "发布者",
+            align: 'center',
+            sortable: true,
+        }, {
+            field: "pub_date",
+            title: "更新时间",
+            align: 'center',
+            sortable: true,
+        }, {
+            title: "操作",
+            align: 'center',
+            formatter: function () {
+                    return '<button class="btn btn-success btn-sm" title="编辑通知">编辑</button>'
+            },
+            events: {
+                'click button[title=编辑通知]': function (e, value, row, index) {
+                    $('#announcementID').text(row.id);
+                    $('#announcementTitle').val(row.title);
+                    $('#announcementText').val(row.notice);
+                    $('#announcementModal').modal();
+                },
+            }
+        }]
+    });
+
+
+    $('#createAnnouncement').click(function () {
+        $('#announcementID').text('');
+        $('#announcementTitle').val('');
+        $('#announcementText').val('');
+        $('#announcementModal').modal();
+    });
+
+
+    $('#announcementModalSubmit').click(function () {
+        let announcement_id = $('#announcementID');
+        let title = $('#announcementTitle');
+        let noticeText = $('#announcementText');
+        if (title.val().trim() && noticeText.val().trim()){
+            $.post(
+                '/crm/api/announcements/',
+                {
+                    'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+                    'announcement_id': announcement_id.text(),
+                    'title': title.val().trim(),
+                    'notice': noticeText.val()
+                },
+                function (data) {
+                    let message = data.message;
+                    if (message == 'success'){
+                        $('#announcementModal').modal('hide');
+                        $('#announcementsTable').bootstrapTable('refresh');
                     }else{
                         alert(message);
                     }
@@ -1145,8 +1493,85 @@ window.onload = function () {
                 }
             );
         }else {
-            alert('店铺名称、客户名称不能为空！');
+            alert('标题或公告内容不能为空！')
         }
 
+    });
+
+    $('[data-toggle="tooltip"]').tooltip()
+
+    $('#groupsTable').bootstrapTable({
+        url: '/crm/api/groups/',
+        method: 'get',                      //请求方式（*）
+        toolbar: '#toolbar',                //工具按钮用哪个容器
+        striped: true,                      //是否显示行间隔色
+        cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+        pagination: true,                   //是否显示分页（*）
+        sortable: true,                     //是否启用排序
+        sortName: 'id',           //默认排序字段
+        sortOrder: "asc",                   //排序方式
+        sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+        pageNumber: 1,                       //初始化加载第一页，默认第一页
+        pageSize: 10,                       //每页的记录行数（*）
+        search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+        strictSearch: false,                //是否精确匹配
+        showColumns: true,                  //是否显示所有的列
+        showRefresh: true,                  //是否显示刷新按钮
+        minimumCountColumns: 2,             //最少允许的列数
+        clickToSelect: true,                //是否启用点击选中行
+        detailView: false,                   //是否显示父子表
+        columns: [{
+            field: "id",
+            title: 'ID',
+            align: 'center',
+        }, {
+            field: "group_name",
+            title: "群组名称",
+            align: 'center',
+            sortable: true,
+        }, {
+            field: "address",
+            title: "群组地址",
+            class: "text-truncate",
+        }, {
+            field: "members_total",
+            title: "成员总数",
+            align: 'center',
+        }]
+    });
+
+
+    $('#createGroupBtn').click(function () {
+        $('#groupModalAction').val('create');
+        $('#groupModal').modal();
+    });
+
+    $('#groupModalSubmit').click(function () {
+        let action = $('#groupModalAction').val().trim();
+        let group_name = $('#newGroupName').val().trim();
+        let address = $('#newAddress').val();
+        if (group_name && address){
+            $.post(
+                '/crm/api/groups/',
+                {
+                    'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val(),
+                    'action': action,
+                    'group_name': group_name,
+                    'address': address
+                },
+                function (data) {
+                    let message = data.message;
+                    if (message == 'success'){
+                        $('#groupModal').modal('hide');
+                        $('table[name=groupsTable]').bootstrapTable('refresh');
+                    }else{
+                        alert(message);
+                    }
+                }
+            );
+
+        }else {
+            alert('群组名称或地址不能为空！');
+        }
     });
 }

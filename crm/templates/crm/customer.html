@@ -39,11 +39,15 @@
                     <div class="tab-pane fade show active" id="v-pills-order" role="tabpanel"
                          aria-labelledby="v-pills-order-tab">
                         <div class="btn-group" style="position: absolute; margin-top: 2rem;">
-                            <div class="p-2"><button class="btn btn-primary" data-toggle="modal"
-                                    data-target="#createOrderModal">提交问题</button>
+                            <div class="p-2">
+                                <button class="btn btn-primary" data-toggle="modal"
+                                        data-target="#createOrderModal">提交问题
+                                </button>
                             </div>
-                            <div class="p-2"><button class="btn btn-warning" data-toggle="modal"
-                                    data-target="#interceptModal">拦截退回</button>
+                            <div class="p-2">
+                                <button class="btn btn-warning" data-toggle="modal"
+                                        data-target="#interceptModal">拦截退回
+                                </button>
                             </div>
                         </div>
                         <div style="height: 2rem"></div>
@@ -56,7 +60,8 @@
                         <table data-toggle="table" id="customerFinishedOrdersTable" name="orderTable"></table>
                     </div>
                     <div class="tab-pane fade" id="v-pills-paused" role="tabpanel" aria-labelledby="v-pills-paused-tab">
-                        <table class="table table-condensed" name="pausedDistrictsCT" style="word-break:break-all;"></table>
+                        <table class="table table-condensed" name="pausedDistrictsCT"
+                               style="word-break:break-all;"></table>
                     </div>
 
                 </div>
@@ -71,13 +76,17 @@
     <div class="card" style="height: 50rem">
         <div class="card-header text-center">{{ group_name }}</div>
         <div class="card-body">
-            <h4 class="card-title text-center">{{ notice.title }}</h4>
-            <p class="card-text text-wrap">
-            <pre>{{ notice.notice }}</pre>
-            </p>
-            <div style="height: 3rem"></div>
-            <p class="text-right font-italic text-warning">{{ notice.user }}</p>
-            <p class="text-right font-italic text-black-50">{{ notice.pub_date }}</p>
+            {% if notice %}
+                <h4 class="card-title text-center">{{ notice.title }}</h4>
+                <p class="card-text text-wrap">
+                <pre>{{ notice.notice }}</pre>
+                </p>
+                <div style="height: 3rem"></div>
+                <p class="text-right font-italic text-warning">{{ notice.user }}</p>
+                <p class="text-right font-italic text-black-50">{{ notice.pub_date }}</p>
+            {% else %}
+                <p>暂无公告通知</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
@@ -112,7 +121,9 @@
                         <div class="form-group">
                             {% csrf_token %}
                             <label class="col-form-label" for="createOrderNumber"><span
-                                    class="text-danger">*</span>单号：&nbsp;&nbsp;<span class="text-danger" id="create_zto_number_danger"></span>&nbsp;&nbsp;<span id="create_zto_number_result"></span></label>
+                                    class="text-danger">*</span>单号：&nbsp;&nbsp;<span class="text-danger"
+                                                                                     id="create_zto_number_danger"></span>&nbsp;&nbsp;<span
+                                    id="create_zto_number_result"></span></label>
                             <input type="number" id="createOrderNumber" class="form-control">
                             <label class="col-form-label" for="questionTextForModal"><span class="text-danger">*</span>问题描述：</label>
                             <textarea class="form-control" name="questionTextForModal" id="questionTextForModal"
@@ -147,7 +158,9 @@
                     <div id="interceptForm">
                         <div class="form-group">
                             {% csrf_token %}
-                            <label class="col-form-label" for="interceptOrdersForModal"><span class="text-danger">*</span>请填写需要拦截的单号：&nbsp;&nbsp;<span class="text-danger" id="interceptWarning"></span></label>
+                            <label class="col-form-label" for="interceptOrdersForModal"><span
+                                    class="text-danger">*</span>请填写需要拦截的单号：&nbsp;&nbsp;<span class="text-danger"
+                                                                                             id="interceptWarning"></span></label>
                             <textarea class="form-control" name="interceptOrdersForModal" id="interceptOrdersForModal"
                                       cols="14"
                                       rows="10" placeholder="多个单号请以逗号分隔或每个单号单独占一行" required></textarea>

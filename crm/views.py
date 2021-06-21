@@ -91,7 +91,10 @@ def order_modal(order):
 def customer(request):
     username = request.session.get('user_name')
     group_name = request.session.get('group_name')
-    notice = models.Announcement.objects.filter(group__group_name=group_name).latest()
+    try:
+        notice = models.Announcement.objects.filter(group__group_name=group_name).latest()
+    except models.Announcement.DoesNotExist:
+        notice = {}
     return render(request, 'crm/customer.html', locals())
 
 
@@ -99,7 +102,10 @@ def customer(request):
 def service(request):
     username = request.session.get('user_name')
     group_name = request.session.get('group_name')
-    notice = models.Handover.objects.filter(group__group_name=group_name).latest()
+    try:
+        notice = models.Handover.objects.latest()
+    except models.Handover.DoesNotExist:
+        notice = {}
     return render(request, 'crm/service.html', locals())
 
 
@@ -107,13 +113,21 @@ def service(request):
 def customer_manager(request):
     username = request.session.get('user_name')
     group_name = request.session.get('group_name')
-    notice = models.Announcement.objects.filter(group__group_name=group_name).latest()
+    try:
+        notice = models.Announcement.objects.filter(group__group_name=group_name).latest()
+    except models.Announcement.DoesNotExist:
+        notice = {}
     return render(request, 'crm/customermanager.html', locals())
 
 
 @my_not_login
 def service_manager(request):
     username = request.session.get('user_name')
+    group_name = request.session.get('group_name')
+    try:
+        notice = models.Handover.objects.latest()
+    except models.Handover.DoesNotExist:
+        notice = {}
     return render(request, 'crm/servicemanager.html', locals())
 
 
@@ -161,16 +175,55 @@ def freeze(request):
 
 @my_not_login
 def announcements(request):
-    group_name = request.session.get('group_name')
-    notices = models.Announcement.objects.filter(group__group_name=group_name).order_by('-pub_date').values()
-    return JsonResponse([i for i in notices], safe=False)
+    if request.method == 'GET':
+        group_id = request.session.get('group_id')
+        notices = models.Announcement.objects.filter(group_id=group_id).order_by('-pub_date')
+        notice_list = []
+        for i in notices:
+            temp = {
+                'id': i.id,
+                'group': i.group.group_name,
+                'user': i.user.name,
+                'title': i.title,
+                'notice': i.notice,
+                'pub_date': i.pub_date.strftime('%Y-%m-%d %H:%M:%S')
+            }
+            notice_list.append(temp)
+        return JsonResponse(notice_list, safe=False)
+    elif request.method == 'POST':
+        role = request.session.get('user_role')
+        if role == 'CM':
+            user_id = request.session.get('user_id')
+            group_id = request.session.get('group_id')
+            announcement_id = request.POST.get('announcement_id')
+            title = request.POST.get('title').replace('<', '')
+            notice = request.POST.get('notice').replace('<', '')
+            if announcement_id:
+                models.Announcement.objects.update_or_create(
+                    id=announcement_id,
+                    defaults={
+                        'user_id': user_id,
+                        'group_id': group_id,
+                        'title': title,
+                        'notice': notice
+                    }
+                )
+            else:
+                models.Announcement.objects.create(
+                    user_id=user_id,
+                    group_id=group_id,
+                    title=title,
+                    notice=notice
+                )
+            return JsonResponse({'message': 'success'}, safe=False)
+        else:
+            return JsonResponse({'message': '权限异常，禁止访问！'}, safe=False)
 
 
 @my_not_login
 def handover(request):
-    group_id = request.session.get('group_id')
     if request.method == 'GET':
-        notices = models.Handover.objects.filter(group=group_id).order_by('-pub_date')
+        notices = models.Handover.objects.all().order_by('-pub_date')
         notice_list = []
         for i in notices:
             notice = {
@@ -187,16 +240,57 @@ def handover(request):
         title = request.POST.get('handoverTitle')
         handover_text = request.POST.get('handoverText')
         recipient = request.POST.get('recipient')
-        new_handover = models.Handover.objects.create(
-            group_id=group_id,
+        models.Handover.objects.create(
             title=title,
             handover_text=handover_text,
             recipient_id=recipient,
             user_id=user_id,
         )
-        new_handover.save()
         models.Order.objects.filter(service=user_id, order_status=2).update(service=recipient)
         return JsonResponse({'message': 'success'}, safe=False)
+
+
+@my_not_login
+def group(request):
+    if request.method == 'GET':
+        role = request.session.get('user_role')
+        if role == 'SM':
+            groups = models.Group.objects.all()
+            group_list = []
+            for g in groups:
+                temp = {
+                    'id': g.id,
+                    'group_name': g.group_name,
+                    'address': g.address,
+                    'members_total': g.user_set.count()
+                }
+                group_list.append(temp)
+            return JsonResponse(group_list, safe=False)
+        else:
+            return JsonResponse({'message': '权限异常，禁止访问！'}, safe=False)
+
+    elif request.method == 'POST':
+        role = request.session.get('user_role')
+        if role == 'SM':
+            action = request.POST.get('action')
+            if action == 'create':
+                name = request.POST.get('group_name')
+                address = request.POST.get('address')
+                obj, created = models.Group.objects.get_or_create(
+                    group_name=name,
+                    defaults={
+                        'group_name': name,
+                        'address': address
+                    }
+                )
+                if created:
+                    return JsonResponse({'message': 'success'}, safe=False)
+                else:
+                    return JsonResponse({'message': '群组名称已存在，不能重复创建。'}, safe=False)
+        else:
+            return JsonResponse({'message': '权限异常，禁止访问！'}, safe=False)
+    else:
+        return JsonResponse({'message': '权限异常，禁止访问！'}, safe=False)
 
 
 @method_decorator(my_not_login, name='dispatch')
@@ -216,6 +310,8 @@ class Shops(View):
                 }
                 shop_list.append(temp)
             return JsonResponse(shop_list, safe=False)
+        else:
+            return JsonResponse({'message': '权限异常！'}, safe=False)
 
     def post(self, request):
         role = request.session.get('user_role')
@@ -248,13 +344,26 @@ class Users(View):
         context = {}
         if role == 'S':
             if user_role == 'S':
-                users = models.User.objects.filter(role='S').exclude(name=username).values_list('id', 'name', 'phone',
-                                                                                                'group__group_name',
-                                                                                                'role')
+                users = models.User.objects.filter(role='S', status='启用').exclude(name=username).values_list(
+                    'id',
+                    'name',
+                    'phone',
+                    'group__group_name',
+                    'role')
                 context['message'] = 'success'
                 context['user_list'] = [i for i in users]
             elif user_role == 'SM':
-                pass
+                users = models.User.objects.filter(role_id='S')
+                user_list = []
+                for i in users:
+                    temp = {
+                        'id': i.id,
+                        'name': i.name,
+                        'phone': i.phone,
+                        'status': i.status
+                    }
+                    user_list.append(temp)
+                return JsonResponse(user_list, safe=False)
             else:
                 context['message'] = 'access denied!'
         elif role == 'C':
@@ -389,7 +498,12 @@ class Orders(View):
                 else:
                     orders = models.Order.objects.filter(service__name=username)
             elif role == "SM":
-                orders = models.Order.objects.filter(service__group__group_name=group_name)
+                if order_status == 'processing':
+                    orders = models.Order.objects.filter(order_status__in=[1, 2])
+                elif order_status == 'finished':
+                    orders = models.Order.objects.filter(order_status__in=[3, 4])
+                else:
+                    orders = models.Order.objects.all()
             else:
                 message = '权限异常！'
                 return JsonResponse({'message': message}, safe=False)
@@ -398,7 +512,7 @@ class Orders(View):
                 if i.service:
                     service_name = i.service.name
                 else:
-                    service_name = '-'
+                    service_name = '<span class="badge badge-success">waiting</span>'
                 temp = {
                     'id': i.id,
                     'customer': i.customer.name,
@@ -439,7 +553,7 @@ class Orders(View):
                     }
                 else:
                     question_types = request.POST.get('question_types')
-                    question_text = request.POST.get('question_text')
+                    question_text = request.POST.get('question_text').replace('<', '')
                     user_id = request.session.get('user_id')
                     group_id = request.session.get('group_id')
                     models.Order.objects.create(
@@ -595,6 +709,24 @@ class Orders(View):
             else:
                 return JsonResponse({'message': '权限异常，禁止访问！'}, safe=False)
 
+        elif action == 'allot':
+            zto_number = request.POST.get('z_number')
+            service_id = request.POST.get('service_id')
+            if role == 'SM':
+                try:
+                    order = models.Order.objects.get(zto_number=zto_number)
+                except models.Order.DoesNotExist:
+                    return JsonResponse({'message': '订单不存在！'}, safe=False)
+                try:
+                    user = models.User.objects.get(id=service_id)
+                except models.User.DoesNotExist:
+                    return JsonResponse({'message': '用户不存在！'}, safe=False)
+                order.service = user
+                order.save()
+                return JsonResponse({'message': 'success'}, safe=False)
+            else:
+                return JsonResponse({'message': '权限异常，禁止访问！'}, safe=False)
+
 
 @my_not_login
 def comments(request):
@@ -608,7 +740,7 @@ def comments(request):
             order = models.Order.objects.get(zto_number=z_number)
         except models.Order.DoesNotExist:
             return JsonResponse({'message': 'The order does not exist.'}, safe=False)
-        comment_text = request.POST.get('commentText')
+        comment_text = request.POST.get('commentText').replace('<', '')
         new_comment = models.Comment.objects.create(
             user_id=user_id,
             order=order,
@@ -650,7 +782,7 @@ class PausedDistricts(View):
         if role in ['S', 'SM', 'CM']:
             user_id = request.session.get('user_id')
             province = request.POST.get('province')
-            area = request.POST.get('area')
+            area = request.POST.get('area').replace('<', '')
             try:
                 paused_district = models.PausedDistrict.objects.get(province=province)
             except models.PausedDistrict.DoesNotExist:

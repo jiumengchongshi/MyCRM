@@ -20,7 +20,7 @@
                                role="tab" aria-controls="v-pills-handover" aria-selected="false">交接日报</a>
                             <a class="nav-link active" id="v-pills-workbench-tab" data-toggle="pill"
                                href="#v-pills-workbench" role="tab" aria-controls="v-pills-workbench"
-                               aria-selected="true">我的工作台</a>
+                               aria-selected="true">工作台</a>
                             <a class="nav-link" id="v-pills-finished-tab" data-toggle="pill" href="#v-pills-finished"
                                role="tab" aria-controls="v-pills-finished" aria-selected="false">已完成的问题</a>
                             <a class="nav-link" id="v-pills-paused-tab" data-toggle="pill" href="#v-pills-paused"
@@ -140,8 +140,9 @@
 
 {% block notice %}
     <div class="card" style="height: 50rem">
-        <div class="card-header text-center">{{ group_name }}</div>
+        <div class="card-header text-center">保定北市七部</div>
         <div class="card-body">
+            {% if notice %}
             <h4 class="card-title text-center">{{ notice.title }}</h4>
             <p class="card-text text-wrap">
                 <span class="font-italic text-warning">{{ notice.user }}</span>&nbsp;交接给：<span
@@ -150,6 +151,9 @@
             </p>
             <div style="height: 3rem"></div>
             <p class="text-right font-italic text-black-50">{{ notice.pub_date }}</p>
+            {% else %}
+                <p>暂无交接日报</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

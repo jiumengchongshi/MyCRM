@@ -38,7 +38,15 @@
                 <div class="tab-content" id="v-pills-tabContent">
                     <div class="tab-pane fade" id="v-pills-announcement" role="tabpanel"
                          aria-labelledby="v-pills-announcement-tab">
-                        {% include 'crm/announcement.html' %}
+                        <div class="btn-group" style="position: absolute; margin-top: 2rem;">
+                            <div class="p-2">
+                                <button class="btn btn-primary" id="createAnnouncement">发布公告
+                                </button>
+                            </div>
+                        </div>
+                        <div style="height: 2rem"></div>
+                        <table id="announcementsTable" name="announcementsTable"></table>
+
                     </div>
                     <div class="tab-pane fade show active" id="v-pills-order" role="tabpanel"
                          aria-labelledby="v-pills-order-tab">
@@ -102,18 +110,57 @@
     <div class="card" style="height: 50rem">
         <div class="card-header text-center">{{ group_name }}</div>
         <div class="card-body">
-            <h4 class="card-title text-center">{{ notice.title }}</h4>
-            <p class="card-text text-wrap">
-            <pre>{{ notice.notice }}</pre>
-            </p>
-            <div style="height: 3rem"></div>
-            <p class="text-right font-italic text-warning">{{ notice.user }}</p>
-            <p class="text-right font-italic text-black-50">{{ notice.pub_date }}</p>
+            {% if notice %}
+                <h4 class="card-title text-center">{{ notice.title }}</h4>
+                <p class="card-text text-wrap">
+                <pre>{{ notice.notice }}</pre>
+                </p>
+                <div style="height: 3rem"></div>
+                <p class="text-right font-italic text-warning">{{ notice.user }}</p>
+                <p class="text-right font-italic text-black-50">{{ notice.pub_date }}</p>
+            {% else %}
+                <p>暂无公告通知</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
 
 {% block modal %}
+    <div class="modal fade bd-example-modal-lg" id="announcementModal" tabindex="-1" role="dialog"
+         aria-labelledby="announcementModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">公告<span style="display: none" id="announcementID"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="announcementTitle" class="col-form-label"><span
+                                class="text-danger">*</span>标题：</label>
+                        <input type="text" class="form-control" id="announcementTitle">
+                        <label for="announcementText" class="col-form-label"><span
+                                class="text-danger">*</span>公告正文：</label>
+                        <textarea class="form-control" id="announcementText"
+                                      cols="30"
+                                      rows="10" required></textarea>
+                    </div>
+
+                    <div style="text-align: center; width: 100%;">
+                        <button type="button" class="btn btn-primary" style="width: 10rem;" id="announcementModalSubmit">提交
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
     <!--create order modal-->
     <div class="modal fade bd-example-modal-lg" id="createOrderModal" tabindex="-1" role="dialog"
          aria-labelledby="createOrderModalTitle" aria-hidden="true">

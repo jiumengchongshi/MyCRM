@@ -21,5 +21,6 @@ urlpatterns = [
     path('api/users/<str:role>/', views.Users.as_view(), name='api_usersByRole'),
     path('api/paused_districts/', views.PausedDistricts.as_view(), name='api_paused_districts'),
     path('api/shops/', views.Shops.as_view(), name='api_shops'),
+    path('api/groups/', views.group, name='api_group'),
 
 ]

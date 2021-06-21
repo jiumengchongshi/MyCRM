@@ -1,10 +1,7 @@
-<div class="container-flout">
-
-    <!--
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
-            <ul class="list-group list-group-horizontal" style="margin: 3rem">
+            <ul class="list-group list-group-horizontal" style="margin: 1rem">
                 <li class="list-group-item">改地址&nbsp;<span class="badge badge-primary badge-pill">14</span></li>
                 <li class="list-group-item">拦截&nbsp;<span class="badge badge-primary badge-pill">14</span></li>
                 <li class="list-group-item">催派&nbsp;<span class="badge badge-primary badge-pill">14</span></li>
@@ -14,43 +11,5 @@
         </div>
         <div class="col-md-2"></div>
     </div>
-    -->
-
-    <div class="btn-group" style="position: absolute; margin-top: 2rem;">
-        <div class="p-2"><a href="javascript:void(0);" class="btn btn-primary" id="service-waiting">接单（待处理<span
-                class="text-warning font-weight-bold" id="waiting-orders-quantity"></span>）</a>
-        </div>
-        <div class="p-2"><a href="javascript:void(0);" class="btn btn-warning" id="service-handover">交接</a>
-        </div>
-    </div>
-    <div style="height: 2rem;"></div>
-    <table class="text-center"
-           data-toggle="table"
-           data-url="/crm/api/orders/?order_status=processing"
-           data-pagination="true"
-           data-toolbar="#ratoolbar"
-           data-show-refresh="true"
-           data-auto-refresh="true"
-           data-show-columns="true"
-           data-search="true"
-           data-locale="zh-CN"
-           id="processingQuestionList"
-           name="orderTable">
-        <thead>
-        <tr>
-            <th data-field="" data-formatter="tableIndex" data-width="5px">序号</th>
-            <th data-field="zto_number">快递单号</th>
-            <th data-sortable="true" data-field="question_types">问题类型</th>
-            <th data-field="question_text" class="text-truncate">问题描述</th>
-            <th data-sortable="true" data-field="order_status">处理状态</th>
-            <th data-sortable="true" data-field="create_time">提交时间</th>
-            <th data-sortable="true" data-field="customer">客户姓名</th>
-            <th data-sortable="true" data-field="group">客户组</th>
-            <th data-field="cc" data-formatter="serviceAction" data-events="actionEvents">操作</th>
-        </tr>
-        </thead>
-    </table>
-</div>
-
 
 

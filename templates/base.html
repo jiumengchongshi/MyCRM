@@ -134,7 +134,6 @@
     </div>
 </div>
 
-
 <!-- User modal-->
 <div class="modal fade" id="userModal" tabindex="-1" role="dialog"
      aria-labelledby="userModalTitle" aria-hidden="true">
@@ -151,14 +150,15 @@
                     <div class="form-group">
                         <label for="newUserName" class="col-form-label"><span
                                 class="text-danger">*</span>用户名：</label>
-                        <input type="text" class="form-control" id="newUserName">
+                        <input type="text" class="form-control" id="newUserName" placeholder="用户名一旦创建无法修改，请认真核对！">
                     </div>
                     <div class="form-group">
                         <label for="newUserPhone" class="col-form-label"><span
                                 class="text-danger">*</span>联系电话：</label>
-                        <input type="number" class="form-control" id="newUserPhone"></input>
+                        <input type="number" class="form-control" id="newUserPhone">
                     </div>
                 </form>
+                <p class="text-info">温馨提示：新创建用户默认密码为：123456，首次登陆系统需要强制修改密码。</p>
 
                 <div style="text-align: center; width: 100%;">
                     <button type="button" class="btn btn-primary" style="width: 10rem;" id="userModalSubmit">提交
@@ -170,6 +170,42 @@
     </div>
 </div>
 
+<!-- Group modal-->
+<div class="modal fade" id="groupModal" tabindex="-1" role="dialog"
+     aria-labelledby="groupModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">群组</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <input type="text" style="display: none" id="groupModalAction">
+                        <label for="newGroupName" class="col-form-label"><span
+                                class="text-danger">*</span>群组名称：</label>
+                        <input type="text" class="form-control" id="newGroupName" placeholder="群组名称一旦创建无法修改，请认真核对！">
+                    </div>
+                    <div class="form-group">
+                        <label for="newAddress" class="col-form-label"><span
+                                class="text-danger">*</span>群组地址：</label>
+                        <input type="text" class="form-control" id="newAddress">
+                    </div>
+                </form>
+                <p class="text-info">温馨提示：群组地址用于拦截改地址，客户提交拦截件实际生成改地址件并改为群组所在地址。</p>
+
+                <div style="text-align: center; width: 100%;">
+                    <button type="button" class="btn btn-primary" style="width: 10rem;" id="groupModalSubmit">提交
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 <!-- Shop modal-->
 <div class="modal fade" id="shopModal" tabindex="-1" role="dialog"
@@ -203,39 +239,39 @@
 </div>
 
 {% block change_pwd %}
-<!-- Change_pwd modal-->
-<div class="modal fade" id="change_pwdModal" tabindex="-1" role="dialog"
-     aria-labelledby="change_pwdModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">修改密码</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="originalPassword" class="col-form-label"><span
-                            class="text-danger">*</span>原密码：<span class="text-secondary">密码长度为6-14位</span></label>
-                    <input type="password" class="form-control" id="originalPassword" maxlength="14">
-                    <label for="newPassword1" class="col-form-label"><span
-                            class="text-danger">*</span>新密码：</label>
-                    <input type="password" class="form-control" id="newPassword1" maxlength="14">
-                    <label for="newPassword2" class="col-form-label"><span
-                            class="text-danger">*</span>重复新密码：</label>
-                    <input type="password" class="form-control" id="newPassword2" maxlength="14">
-                </div>
-
-                <div style="text-align: center; width: 100%;">
-                    <button type="button" class="btn btn-primary" style="width: 10rem;" id="change_pwdSubmit">提交
+    <!-- Change_pwd modal-->
+    <div class="modal fade" id="change_pwdModal" tabindex="-1" role="dialog"
+         aria-labelledby="change_pwdModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">修改密码</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-            </div>
-        </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="originalPassword" class="col-form-label"><span
+                                class="text-danger">*</span>原密码：<span class="text-secondary">密码长度为6-14位</span></label>
+                        <input type="password" class="form-control" id="originalPassword" maxlength="14">
+                        <label for="newPassword1" class="col-form-label"><span
+                                class="text-danger">*</span>新密码：</label>
+                        <input type="password" class="form-control" id="newPassword1" maxlength="14">
+                        <label for="newPassword2" class="col-form-label"><span
+                                class="text-danger">*</span>重复新密码：</label>
+                        <input type="password" class="form-control" id="newPassword2" maxlength="14">
+                    </div>
 
+                    <div style="text-align: center; width: 100%;">
+                        <button type="button" class="btn btn-primary" style="width: 10rem;" id="change_pwdSubmit">提交
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-</div>
 {% endblock %}
 
 {% block modal %}
