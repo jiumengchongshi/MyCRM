@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '&^)c3@bzpod=1b68a))fyj#kxa3u098pzbv1-1x)q9nuzz@jby'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -127,46 +127,4 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
-'''
-cur_path = os.path.dirname(os.path.realpath(__file__))  # log_path是存放日志的路径
-log_path = os.path.join(os.path.dirname(cur_path), 'logs')
-if not os.path.exists(log_path):
-    os.mkdir(log_path)  # 如果不存在这个logs文件夹，就自动创建一个
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'standard': {
-            'format': '%(levelname)s %(asctime)s %(message)s'   # 输出格式
-        },
-    },
-    'handlers': {
-        'visit_handlers': {     # visit_handlers : 标识（名字）
-            'level': 'INFO',    # 日志等级
-            'maxBytes': 5 * 1024 * 1024,    # 文件大小 - 这里是文件到 5M 会自动清空
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/visit_log',   # 日志存储文件
-            'formatter': 'standard',
-        },
-        'server_handlers': {
-            'level': 'ERROR',
-            'maxBytes': 5 * 1024 * 1024,
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/server_log',
-            'formatter': 'standard',
-        },
-    },
-    'loggers': {
-        'visit': {
-            'handlers': ['visit_handlers'],     # 使用哪个 handlers
-            'level': 'INFO',    # 日志等级，这里的等级要比 handlers 要高或者一致
-            'propagate': False,
-        },
-        'server': {
-            'handlers': ['server_handlers'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-    },
-}
-'''
+STATIC_ROOT = os.path.join(BASE_DIR, 'statics')
